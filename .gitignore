@@ -1,5 +1,6 @@
 # Custom ignores for this project:
-
+img/**
+!img/info.md
 *.jpg
 .DS_Store
 csv/**
