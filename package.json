@@ -1,0 +1,18 @@
+{
+  "name": "batch-rename",
+  "version": "1.0.0",
+  "description": "a simple tool to batch-rename files following a predefined schema",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "kristoff lalicki",
+  "license": "ISC",
+  "dependencies": {
+    "csv": "^6.2.0",
+    "csv-parser": "^3.0.0",
+    "neat-csv": "^7.0.0",
+    "prompt": "^1.3.0",
+    "prompt-sync": "^4.2.0"
+  }
+}
