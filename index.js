@@ -36,18 +36,37 @@ const outputNameArray = BBB.map(fixFilename);
 console.log(outputNameArray);
 let multiplier = fileNameArray.length;
 prompt(`OK to rename ${multiplier * outputNameArray.length} items?`);
+let errorCount = 0;
+let successCount = 0;
+
 //fix the first file
-fs.renameSync(`./img/${baseName}_.jpg`, `./img/${baseName}_1.jpg`);
+try {
+  fs.renameSync(`./img/${baseName}_.jpg`, `./img/${baseName}_1.jpg`);
+} catch {
+  console.log("error renaming first file");
+}
 
 outputNameArray.forEach((outputItem, outputIndex) => {
   fileNameArray.forEach((inputItem, inputIndex) => {
     let curIndex = outputIndex * multiplier + inputIndex + 1;
     let newFilename = `./img/${newBaseName}_${outputItem}_${inputItem}.jpg`;
     let oldFilename = `./img/${baseName}_${curIndex}.jpg`;
-    console.log(`${oldFilename} >>> ${newFilename}`);
-    fs.renameSync(oldFilename, newFilename);
+
+    try {
+      fs.renameSync(oldFilename, newFilename);
+      successCount++;
+      console.log("successfully renamed file:");
+      console.log(`  ${oldFilename} >>> ${newFilename}`);
+    } catch {
+      console.log("error renaming file:");
+      console.log(`  ${oldFilename} >>> ${newFilename}`);
+      errorCount++;
+    }
   });
 });
+console.log(
+  `Completed renaming ${successCount} files with ${errorCount} errors`
+);
 
 /**
  * make sure a filename has the correct extension, and add it if it doesn't
