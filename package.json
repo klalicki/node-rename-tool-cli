@@ -1,6 +1,6 @@
 {
   "name": "batch-rename",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "a simple tool to batch-rename files following a predefined schema",
   "main": "index.js",
   "scripts": {

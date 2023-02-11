@@ -3,7 +3,8 @@
 A node.js-based command line tool for batch renaming files, intended to be used as part of a data-merge workflow
 
 ### Background
-This tool is designed to be used in conjunction with the data-merge workflow in Adobe InDesign for templated bulk production of graphic assets, such as banner ads, social media post series, etc. It takes a folder of images and renames them based on the provided data files. 
+
+This tool is designed to be used in conjunction with the data-merge workflow in Adobe InDesign for templated bulk production of graphic assets, such as banner ads, social media post series, etc. It takes a folder of images and renames them based on the provided data files.
 
 ### Requirements
 
@@ -25,11 +26,11 @@ The package directory includes several folders:
 
 To use this tool, type `node index.js` or `node .` in the repository directory.
 The tool will prompt for the following parameters:
+
 - current base file name: the current
 - prefix: a short identifier that is prepended to each file name.
 - asset types CSV: a single-column list of file dimensions/asset types
 - batch names CSV: a single-column list of unique identifiers for each batch of asset
-
 
 ### Feature Roadmap
 
@@ -42,6 +43,6 @@ The tool will prompt for the following parameters:
 - [ ] add separate src and output folders
 - [ ] add option to move assets into individual folders by group
 - [ ] implement a way to clean up the imported CSV files to remove empty lines
-- [ ] add option to omit prefix parameter
+- [x] add option to omit prefix parameter (added in v1.2.0)
 - [ ] allow tool to work with file types other than JPG
 - [ ] auto suggest base filename from /img directory contents
