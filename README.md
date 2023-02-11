@@ -35,7 +35,7 @@ The tool will prompt for the following parameters:
 
 - [x] MVP: provide a functioning command-line tool that can rename a batch of graphic assets.
 - [ ] provide confirmation/preview of the tool's output with an option to cancel/change parameters
-- [ ] show a list of available CSV files when prompting the user to select one
+- [x] show a list of available CSV files when prompting the user to select one (added in v1.1.0)
 - [ ] allow the user to choose a different CSV file after seeing a preview of its contents
 - [ ] implement more robust error handling and explanatory error messages
 - [ ] improve clarity of interface prompts and readme.md documentation

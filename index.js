@@ -2,6 +2,66 @@ const fs = require("fs");
 const { parse } = require("csv-parse/sync");
 const prompt = require("prompt-sync")();
 const { path } = require("path");
+// function declarations:
+/**
+ * make sure a filename has the correct extension, and add it if it doesn't
+ * @param {string} fileName - The filename/path.
+ * @param {string} extension - The desired extension.
+ */
+const fixExtension = (fileName, extension) => {
+  const extLength = extension.length;
+  const fnLength = fileName.length;
+};
+//create a flag to allow the user to quit the app
+
+/**
+ * make a string into a filename-appropriate string
+ * removes spaces, illegal characters, replacing them with hyphens
+ * @param {string} text - input string.
+ */
+const fixFilename = (text) => {
+  let cleanText = text
+    .replace(/[ &\/\\#,+()$~%.'":*?<>{}]/g, "")
+    .replaceAll(" ", "-")
+    .toLowerCase();
+  while (cleanText.includes("--")) {
+    cleanText = cleanText.replaceAll("--", "-");
+  }
+  return cleanText;
+};
+
+/**
+ * This function lists all the files in the csv directory, then it prompts
+ * the user to select a file. It waits for a valid choice, then returns the filename.
+ * @param message - The message to display to the user.
+ * @returns The file name of the file selected by the user.
+ */
+const promptCSVFile = (message) => {
+  const fileList = fs.readdirSync("./csv/", { withFileTypes: true });
+  const fileNames = [];
+  fileList.forEach((item) => {
+    if (item.isFile()) {
+      fileNames.push(item.name);
+    }
+  });
+  let isPromptLoopRunning = true;
+  while (isPromptLoopRunning) {
+    // console.clear;
+
+    fileNames.forEach((item, index) => {
+      console.log(`[${index + 1}] ${item}`);
+    });
+    const selectValue = prompt(message + " ");
+
+    const selectIndex = parseInt(selectValue) - 1;
+    if (fileNames[selectIndex]) {
+      return fileNames[selectIndex];
+      isPromptLoopRunning = false;
+    }
+  }
+};
+
+promptCSVFile("TEST: select a file!");
 
 console.log("welcome to batch-rename");
 console.log("you should have:");
@@ -14,10 +74,10 @@ let newBaseName = prompt(
   "TS22"
 );
 //ask for filenames
-let inputFilePath = prompt(
-  "input file CSV (default ts_filenames.csv)? this one contains a list of the file dimensions ",
-  "ts22.csv"
+let inputFilePath = promptCSVFile(
+  "Choose a CSV file containing the list of asset types."
 );
+
 //ask for unique identifiers
 
 inputFilePath = "./csv/" + inputFilePath;
@@ -26,10 +86,10 @@ const AAA = parse(inputFileText).flat();
 const fileNameArray = AAA.map(fixFilename);
 console.log(fileNameArray);
 
-let outputFilePath = prompt(
-  "output file CSV (default facultynames.csv)? this one contains a list of faculty names ",
-  "facultynames.csv"
+let outputFilePath = promptCSVFile(
+  "Choose a CSV file containing the list of batch names."
 );
+
 const outputFileText = fs.readFileSync("./csv/" + outputFilePath);
 const BBB = parse(outputFileText).flat();
 const outputNameArray = BBB.map(fixFilename);
@@ -67,29 +127,3 @@ outputNameArray.forEach((outputItem, outputIndex) => {
 console.log(
   `Completed renaming ${successCount} files with ${errorCount} errors`
 );
-
-/**
- * make sure a filename has the correct extension, and add it if it doesn't
- * @param {string} fileName - The filename/path.
- * @param {string} extension - The desired extension.
- */
-function fixExtension(fileName, extension) {
-  const extLength = extension.length;
-  const fnLength = fileName.length;
-}
-
-/**
- * make a string into a filename-appropriate string
- * removes spaces, illegal characters, replacing them with hyphens
- * @param {string} text - input string.
- */
-function fixFilename(text) {
-  let cleanText = text
-    .replace(/[ &\/\\#,+()$~%.'":*?<>{}]/g, "")
-    .replaceAll(" ", "-")
-    .toLowerCase();
-  while (cleanText.includes("--")) {
-    cleanText = cleanText.replaceAll("--", "-");
-  }
-  return cleanText;
-}
