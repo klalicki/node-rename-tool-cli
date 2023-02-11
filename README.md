@@ -27,7 +27,7 @@ The package directory includes several folders:
 To use this tool, type `node index.js` or `node .` in the repository directory.
 The tool will prompt for the following parameters:
 
-- current base file name: the current
+- current base file name: the current filename that the assets are using.
 - prefix: a short identifier that is prepended to each file name.
 - asset types CSV: a single-column list of file dimensions/asset types
 - batch names CSV: a single-column list of unique identifiers for each batch of asset
@@ -35,14 +35,15 @@ The tool will prompt for the following parameters:
 ### Feature Roadmap
 
 - [x] MVP: provide a functioning command-line tool that can rename a batch of graphic assets.
-- [ ] provide confirmation/preview of the tool's output with an option to cancel/change parameters
 - [x] show a list of available CSV files when prompting the user to select one (added in v1.1.0)
+- [x] add option to omit prefix parameter (added in v1.2.0)
+- [ ] provide confirmation/preview of the tool's output with an option to cancel/change parameters
 - [ ] allow the user to choose a different CSV file after seeing a preview of its contents
 - [ ] implement more robust error handling and explanatory error messages
 - [ ] improve clarity of interface prompts and readme.md documentation
 - [ ] add separate src and output folders
 - [ ] add option to move assets into individual folders by group
 - [ ] implement a way to clean up the imported CSV files to remove empty lines
-- [x] add option to omit prefix parameter (added in v1.2.0)
 - [ ] allow tool to work with file types other than JPG
 - [ ] auto suggest base filename from /img directory contents
+- [ ] use consistent language and variable names for the different parameters, based on the language used in readme.md
