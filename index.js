@@ -2,6 +2,7 @@ const fs = require("fs");
 const { parse } = require("csv-parse/sync");
 const prompt = require("prompt-sync")();
 const { path } = require("path");
+
 console.log("welcome to batch-rename");
 console.log("you should have:");
 console.log("1) assets in /img folder named as baseName_(1,2,3).jpg");
