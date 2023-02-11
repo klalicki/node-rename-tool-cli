@@ -84,5 +84,9 @@ function fixExtension(fileName, extension) {
  * @param {string} text - input string.
  */
 function fixFilename(text) {
-  return text.replaceAll(" ", "-").toLowerCase().replaceAll("--", "-");
+  return text
+    .replace(/[ &\/\\#,+()$~%.'":*?<>{}]/g, "")
+    .replaceAll(" ", "-")
+    .toLowerCase()
+    .replaceAll("--", "-");
 }
