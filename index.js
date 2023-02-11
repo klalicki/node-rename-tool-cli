@@ -2,7 +2,61 @@ const fs = require("fs");
 const { parse } = require("csv-parse/sync");
 const prompt = require("prompt-sync")();
 const { path } = require("path");
+// function declarations:
+/**
+ * make sure a filename has the correct extension, and add it if it doesn't
+ * @param {string} fileName - The filename/path.
+ * @param {string} extension - The desired extension.
+ */
+const fixExtension = (fileName, extension) => {
+  const extLength = extension.length;
+  const fnLength = fileName.length;
+};
+//create a flag to allow the user to quit the app
 
+/**
+ * make a string into a filename-appropriate string
+ * removes spaces, illegal characters, replacing them with hyphens
+ * @param {string} text - input string.
+ */
+const fixFilename = (text) => {
+  let cleanText = text
+    .replace(/[ &\/\\#,+()$~%.'":*?<>{}]/g, "")
+    .replaceAll(" ", "-")
+    .toLowerCase();
+  while (cleanText.includes("--")) {
+    cleanText = cleanText.replaceAll("--", "-");
+  }
+  return cleanText;
+};
+
+const promptCSVFile = (message) => {
+  const fileList = fs.readdirSync("./csv/", { withFileTypes: true });
+  const fileNames = [];
+  fileList.forEach((item) => {
+    if (item.isFile()) {
+      fileNames.push(item.name);
+    }
+  });
+  let isPromptLoopRunning = true;
+  while (isPromptLoopRunning) {
+    // console.clear;
+
+    fileNames.forEach((item, index) => {
+      console.log(`[${index + 1}] ${item}`);
+    });
+    const selectValue = prompt(message);
+
+    const selectIndex = parseInt(selectValue) - 1;
+    if (fileNames[selectIndex]) {
+      return fileNames[selectIndex];
+      isPromptLoopRunning = false;
+    }
+  }
+};
+
+promptCSVFile("select a file!");
+console.log(isAppRunning);
 console.log("welcome to batch-rename");
 console.log("you should have:");
 console.log("1) assets in /img folder named as baseName_(1,2,3).jpg");
@@ -67,29 +121,3 @@ outputNameArray.forEach((outputItem, outputIndex) => {
 console.log(
   `Completed renaming ${successCount} files with ${errorCount} errors`
 );
-
-/**
- * make sure a filename has the correct extension, and add it if it doesn't
- * @param {string} fileName - The filename/path.
- * @param {string} extension - The desired extension.
- */
-function fixExtension(fileName, extension) {
-  const extLength = extension.length;
-  const fnLength = fileName.length;
-}
-
-/**
- * make a string into a filename-appropriate string
- * removes spaces, illegal characters, replacing them with hyphens
- * @param {string} text - input string.
- */
-function fixFilename(text) {
-  let cleanText = text
-    .replace(/[ &\/\\#,+()$~%.'":*?<>{}]/g, "")
-    .replaceAll(" ", "-")
-    .toLowerCase();
-  while (cleanText.includes("--")) {
-    cleanText = cleanText.replaceAll("--", "-");
-  }
-  return cleanText;
-}
