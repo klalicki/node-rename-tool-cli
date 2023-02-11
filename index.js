@@ -3,6 +3,7 @@ const { parse } = require("csv-parse/sync");
 const prompt = require("prompt-sync")();
 const { path } = require("path");
 // function declarations:
+
 /**
  * make sure a filename has the correct extension, and add it if it doesn't
  * @param {string} fileName - The filename/path.
@@ -40,7 +41,7 @@ const promptCSVFile = (message) => {
   const fileList = fs.readdirSync("./csv/", { withFileTypes: true });
   const fileNames = [];
   fileList.forEach((item) => {
-    if (item.isFile()) {
+    if (item.isFile() && item.name.includes(".csv")) {
       fileNames.push(item.name);
     }
   });
