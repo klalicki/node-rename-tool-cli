@@ -61,18 +61,18 @@ const promptCSVFile = (message) => {
   }
 };
 
-promptCSVFile("TEST: select a file!");
-
 console.log("welcome to batch-rename");
 console.log("you should have:");
 console.log("1) assets in /img folder named as baseName_(1,2,3).jpg");
 console.log("2) csv file in /csv folder with a list of output file names");
 console.log("3) csv file in /csv folder with list of input file names");
 let baseName = prompt("current base file name (default is asset) ", "asset");
-let newBaseName = prompt(
-  "new base file name (ie TS22, SM22, OL22, default is TS22) ",
-  "TS22"
+let newPrefix = prompt(
+  "new prefix (ie TS22, SM22, OL22) or leave blank to omit "
 );
+if (newPrefix.length > 0) {
+  newPrefix = newPrefix + "_";
+}
 //ask for filenames
 let inputFilePath = promptCSVFile(
   "Choose a CSV file containing the list of asset types."
@@ -109,7 +109,7 @@ try {
 outputNameArray.forEach((outputItem, outputIndex) => {
   fileNameArray.forEach((inputItem, inputIndex) => {
     let curIndex = outputIndex * multiplier + inputIndex + 1;
-    let newFilename = `./img/${newBaseName}_${outputItem}_${inputItem}.jpg`;
+    let newFilename = `./img/${newPrefix}${outputItem}_${inputItem}.jpg`;
     let oldFilename = `./img/${baseName}_${curIndex}.jpg`;
 
     try {
