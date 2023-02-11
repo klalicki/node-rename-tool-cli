@@ -30,6 +30,12 @@ const fixFilename = (text) => {
   return cleanText;
 };
 
+/**
+ * This function lists all the files in the csv directory, then it prompts
+ * the user to select a file. It waits for a valid choice, then returns the filename.
+ * @param message - The message to display to the user.
+ * @returns The file name of the file selected by the user.
+ */
 const promptCSVFile = (message) => {
   const fileList = fs.readdirSync("./csv/", { withFileTypes: true });
   const fileNames = [];
@@ -45,7 +51,7 @@ const promptCSVFile = (message) => {
     fileNames.forEach((item, index) => {
       console.log(`[${index + 1}] ${item}`);
     });
-    const selectValue = prompt(message);
+    const selectValue = prompt(message + " ");
 
     const selectIndex = parseInt(selectValue) - 1;
     if (fileNames[selectIndex]) {
@@ -55,8 +61,8 @@ const promptCSVFile = (message) => {
   }
 };
 
-promptCSVFile("select a file!");
-console.log(isAppRunning);
+promptCSVFile("TEST: select a file!");
+
 console.log("welcome to batch-rename");
 console.log("you should have:");
 console.log("1) assets in /img folder named as baseName_(1,2,3).jpg");
@@ -68,10 +74,10 @@ let newBaseName = prompt(
   "TS22"
 );
 //ask for filenames
-let inputFilePath = prompt(
-  "input file CSV (default ts_filenames.csv)? this one contains a list of the file dimensions ",
-  "ts22.csv"
+let inputFilePath = promptCSVFile(
+  "Choose a CSV file containing the list of asset types."
 );
+
 //ask for unique identifiers
 
 inputFilePath = "./csv/" + inputFilePath;
@@ -80,10 +86,10 @@ const AAA = parse(inputFileText).flat();
 const fileNameArray = AAA.map(fixFilename);
 console.log(fileNameArray);
 
-let outputFilePath = prompt(
-  "output file CSV (default facultynames.csv)? this one contains a list of faculty names ",
-  "facultynames.csv"
+let outputFilePath = promptCSVFile(
+  "Choose a CSV file containing the list of batch names."
 );
+
 const outputFileText = fs.readFileSync("./csv/" + outputFilePath);
 const BBB = parse(outputFileText).flat();
 const outputNameArray = BBB.map(fixFilename);
