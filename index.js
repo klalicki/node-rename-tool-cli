@@ -13,16 +13,15 @@ const fixExtension = (fileName, extension) => {
   const extLength = extension.length;
   const fnLength = fileName.length;
 };
-//create a flag to allow the user to quit the app
 
 /**
  * make a string into a filename-appropriate string
  * removes spaces, illegal characters, replacing them with hyphens
  * @param {string} text - input string.
  */
-const fixFilename = (text) => {
+const createSafeFilename = (text) => {
   let cleanText = text
-    .replace(/[ &\/\\#,+()$~%.'":*?<>{}]/g, "")
+    .replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, "")
     .replaceAll(" ", "-")
     .toLowerCase();
   while (cleanText.includes("--")) {
@@ -75,56 +74,54 @@ if (newPrefix.length > 0) {
   newPrefix = newPrefix + "_";
 }
 //ask for filenames
-let inputFilePath = promptCSVFile(
+let assetTypeFilePath = promptCSVFile(
   "Choose a CSV file containing the list of asset types."
 );
 
-//ask for unique identifiers
+assetTypeFilePath = "./csv/" + assetTypeFilePath;
+const assetTypeFileText = fs.readFileSync(assetTypeFilePath);
+const assetTypeArray = parse(assetTypeFileText).flat().map(createSafeFilename);
+console.log(assetTypeArray);
 
-inputFilePath = "./csv/" + inputFilePath;
-const inputFileText = fs.readFileSync(inputFilePath);
-const AAA = parse(inputFileText).flat();
-const fileNameArray = AAA.map(fixFilename);
-console.log(fileNameArray);
-
-let outputFilePath = promptCSVFile(
+let batchNameFilePath = promptCSVFile(
   "Choose a CSV file containing the list of batch names."
 );
 
-const outputFileText = fs.readFileSync("./csv/" + outputFilePath);
-const BBB = parse(outputFileText).flat();
-const outputNameArray = BBB.map(fixFilename);
-console.log(outputNameArray);
-let multiplier = fileNameArray.length;
-prompt(`OK to rename ${multiplier * outputNameArray.length} items?`);
-let errorCount = 0;
-let successCount = 0;
+const batchNameFileText = fs.readFileSync("./csv/" + batchNameFilePath);
+const batchNameArray = parse(batchNameFileText).flat().map(createSafeFilename);
 
-//fix the first file
-try {
-  fs.renameSync(`./img/${baseName}_.jpg`, `./img/${baseName}_1.jpg`);
-} catch {
-  console.log("error renaming first file");
-}
+console.log(batchNameArray);
 
-outputNameArray.forEach((outputItem, outputIndex) => {
-  fileNameArray.forEach((inputItem, inputIndex) => {
-    let curIndex = outputIndex * multiplier + inputIndex + 1;
-    let newFilename = `./img/${newPrefix}${outputItem}_${inputItem}.jpg`;
+let multiplier = assetTypeArray.length;
+
+const renameOperations = [];
+
+batchNameArray.forEach((batchName, batchNameIndex) => {
+  assetTypeArray.forEach((assetType, assetTypeIndex) => {
+    let curIndex = batchNameIndex * multiplier + assetTypeIndex + 1;
+    let newFilename = `./img/${newPrefix}${batchName}_${assetType}.jpg`;
     let oldFilename = `./img/${baseName}_${curIndex}.jpg`;
-
-    try {
-      fs.renameSync(oldFilename, newFilename);
-      successCount++;
-      console.log("successfully renamed file:");
-      console.log(`  ${oldFilename} >>> ${newFilename}`);
-    } catch {
-      console.log("error renaming file:");
-      console.log(`  ${oldFilename} >>> ${newFilename}`);
-      errorCount++;
+    if (batchNameIndex === 0 && assetTypeIndex === 0) {
+      oldFilename = `./img/${baseName}_.jpg`;
     }
+    renameOperations.push({ old: oldFilename, new: newFilename });
   });
 });
+renameOperations.forEach((item) => {
+  console.log(`${item.old} >> ${item.new}`);
+});
+prompt(`OK to rename ${multiplier * batchNameArray.length} items?`);
+let errorCount = 0;
+let successCount = 0;
+renameOperations.forEach((item) => {
+  try {
+    fs.renameSync(oldFilename, newFilename);
+    successCount++;
+  } catch {
+    errorCount++;
+  }
+});
+
 console.log(
   `Completed renaming ${successCount} files with ${errorCount} errors`
 );
