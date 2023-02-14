@@ -115,7 +115,7 @@ let errorCount = 0;
 let successCount = 0;
 renameOperations.forEach((item) => {
   try {
-    fs.renameSync(oldFilename, newFilename);
+    fs.renameSync(item.old, item.new);
     successCount++;
   } catch {
     errorCount++;
