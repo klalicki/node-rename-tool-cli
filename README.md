@@ -20,8 +20,8 @@ To install node-rename-tool-cli, download or clone this repository to your local
 The package directory includes several folders:
 
 - `/csv`: contains CSV files with lists of data (single column):
-- - asset types: a list of file dimensions/asset types. This likely corresponds directly to the individual pages within the template used for the data-merge process.
-- - batch names: a list of unique identifiers for each batch of assets. This likely corresponds directly to the rows in the data file initially used for the data-merge process.
+  - asset types: a list of file dimensions/asset types. This likely corresponds directly to the individual pages within the template used for the data-merge process.
+  - batch names: a list of unique identifiers for each batch of assets. This likely corresponds directly to the rows in the data file initially used for the data-merge process.
 - `/img`: working directory for images
 
 To use this tool, type `node index.js` or `node .` in the repository directory.
