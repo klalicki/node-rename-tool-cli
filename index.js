@@ -84,22 +84,57 @@ const assetTypeArray = parse(assetTypeFileText).flat().map(createSafeFilename);
 console.log(assetTypeArray);
 
 let batchNameFilePath = promptCSVFile(
-  "Choose a CSV file containing the list of batch names."
+  "Choose a CSV file containing the list of batch/folder names."
 );
 
 const batchNameFileText = fs.readFileSync("./csv/" + batchNameFilePath);
-const batchNameArray = parse(batchNameFileText).flat().map(createSafeFilename);
+const batchNameArray = parse(batchNameFileText);
 
-console.log(batchNameArray);
+batchNameArray[0].map((item, index) => {
+  console.log(`[${index + 1}] ${item}`);
+});
+
+let fileNameIndexRaw = prompt("Which column contains the file names?");
+let folderNameIndexRaw = prompt(
+  "Which column contains the folder names? (or leave blank for no folders)"
+);
+
+let fileNameIndex = parseInt(fileNameIndexRaw) - 1;
+let folderNameIndex = parseInt(folderNameIndexRaw) - 1;
+let folderNameArray = [];
+let useFolders;
+if (isNaN(folderNameIndex)) {
+  //no folder name
+  useFolders = false;
+} else {
+  useFolders = true;
+  folderNameArray = batchNameArray.map((item) => item[folderNameIndex]);
+}
+const fileNameArray = batchNameArray.map((item) => item[fileNameIndex]);
+console.log(useFolders);
+console.log(folderNameArray);
+
+const cleanFileNameArray = fileNameArray.map(createSafeFilename);
+console.log(cleanFileNameArray);
+// console.log(batchNameArray);
 
 let multiplier = assetTypeArray.length;
 
 const renameOperations = [];
+const newFolders = [];
 
-batchNameArray.forEach((batchName, batchNameIndex) => {
+cleanFileNameArray.forEach((batchName, batchNameIndex) => {
+  let baseFolder = "./img";
+  if (useFolders) {
+    //create folder if it doesn't exist
+    let folderName = folderNameArray[batchNameIndex];
+    let folderPath = `./img/${folderName}`;
+    newFolders.push(folderPath);
+    baseFolder = folderPath;
+  }
   assetTypeArray.forEach((assetType, assetTypeIndex) => {
     let curIndex = batchNameIndex * multiplier + assetTypeIndex + 1;
-    let newFilename = `./img/${newPrefix}${batchName}_${assetType}.jpg`;
+    let newFilename = `${baseFolder}/${newPrefix}${batchName}_${assetType}.jpg`;
     let oldFilename = `./img/${baseName}_${curIndex}.jpg`;
     if (batchNameIndex === 0 && assetTypeIndex === 0) {
       oldFilename = `./img/${baseName}_.jpg`;
@@ -107,12 +142,24 @@ batchNameArray.forEach((batchName, batchNameIndex) => {
     renameOperations.push({ old: oldFilename, new: newFilename });
   });
 });
+newFolders.forEach((item) => {
+  console.log(`create folder: ${item}`);
+});
 renameOperations.forEach((item) => {
   console.log(`${item.old} >> ${item.new}`);
 });
-prompt(`OK to rename ${multiplier * batchNameArray.length} items?`);
+prompt(
+  `OK to create ${newFolders.length} folders and rename ${
+    multiplier * batchNameArray.length
+  } items?`
+);
 let errorCount = 0;
 let successCount = 0;
+newFolders.forEach((item) => {
+  if (!fs.existsSync(item)) {
+    fs.mkdirSync(item);
+  }
+});
 renameOperations.forEach((item) => {
   try {
     fs.renameSync(item.old, item.new);
