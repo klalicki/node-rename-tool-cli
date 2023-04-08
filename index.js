@@ -2,8 +2,9 @@ const fs = require("fs");
 const { parse } = require("csv-parse/sync");
 const prompt = require("prompt-sync")();
 const { path } = require("path");
+const { debug } = require("console");
 // function declarations:
-
+const debugMode = true;
 /**
  * make sure a filename has the correct extension, and add it if it doesn't
  * @param {string} fileName - The filename/path.
@@ -126,7 +127,7 @@ const newFolders = [];
 cleanFileNameArray.forEach((batchName, batchNameIndex) => {
   let baseFolder = "./img";
   if (useFolders) {
-    //create folder if it doesn't exist
+    //queue folder for creation if it doesn't already exist
     let folderName = folderNameArray[batchNameIndex];
     let folderPath = `./img/${folderName}`;
     newFolders.push(folderPath);
@@ -153,22 +154,37 @@ prompt(
     multiplier * batchNameArray.length
   } items?`
 );
-let errorCount = 0;
-let successCount = 0;
+let fileErrorCount = 0;
+let fileSuccessCount = 0;
+let folderErrorCount = 0;
+let folderSuccessCount = 0;
+//create new folders if needed
 newFolders.forEach((item) => {
-  if (!fs.existsSync(item)) {
-    fs.mkdirSync(item);
+  try {
+    if (!fs.existsSync(item)) {
+      if (!debugMode) {
+        fs.mkdirSync(item);
+      }
+    }
+    folderSuccessCount++;
+  } catch {
+    folderErrorCount++;
   }
 });
+//rename files and place them in the correct folders;
 renameOperations.forEach((item) => {
   try {
-    fs.renameSync(item.old, item.new);
-    successCount++;
+    if (!debugMode) {
+      fs.renameSync(item.old, item.new);
+    }
+
+    fileSuccessCount++;
   } catch {
-    errorCount++;
+    fileErrorCount++;
   }
 });
 
 console.log(
-  `Completed renaming ${successCount} files with ${errorCount} errors`
+  `Completed creating ${folderSuccessCount} folders with ${folderErrorCount} errors`,
+  `Completed renaming ${fileSuccessCount} files with ${fileErrorCount} errors`
 );
