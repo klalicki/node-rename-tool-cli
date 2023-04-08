@@ -3,8 +3,13 @@ const { parse } = require("csv-parse/sync");
 const prompt = require("prompt-sync")();
 const { path } = require("path");
 const { debug } = require("console");
-// function declarations:
+
+// debugMode: set to true to disable actual file write operations.
+// if true, the script will not actually rename files or create folders.
 const debugMode = true;
+
+// function declarations:
+
 /**
  * make sure a filename has the correct extension, and add it if it doesn't
  * @param {string} fileName - The filename/path.
@@ -119,22 +124,22 @@ const cleanFileNameArray = fileNameArray.map(createSafeFilename);
 console.log(cleanFileNameArray);
 // console.log(batchNameArray);
 
-let multiplier = assetTypeArray.length;
+let batchSize = assetTypeArray.length;
 
 const renameOperations = [];
 const newFolders = [];
 
 cleanFileNameArray.forEach((batchName, batchNameIndex) => {
   let baseFolder = "./img";
+  // check to see if the script should create new folders
   if (useFolders) {
     //queue folder for creation if it doesn't already exist
     let folderName = folderNameArray[batchNameIndex];
-    let folderPath = `./img/${folderName}`;
-    newFolders.push(folderPath);
-    baseFolder = folderPath;
+    baseFolder = `./img/${folderName}`;
+    newFolders.push(baseFolder);
   }
   assetTypeArray.forEach((assetType, assetTypeIndex) => {
-    let curIndex = batchNameIndex * multiplier + assetTypeIndex + 1;
+    let curIndex = batchNameIndex * batchSize + assetTypeIndex + 1;
     let newFilename = `${baseFolder}/${newPrefix}${batchName}_${assetType}.jpg`;
     let oldFilename = `./img/${baseName}_${curIndex}.jpg`;
     if (batchNameIndex === 0 && assetTypeIndex === 0) {
@@ -143,17 +148,26 @@ cleanFileNameArray.forEach((batchName, batchNameIndex) => {
     renameOperations.push({ old: oldFilename, new: newFilename });
   });
 });
+// list all operations that will happen before executing them
+console.clear();
+console.log("operations to be performed: ");
 newFolders.forEach((item) => {
   console.log(`create folder: ${item}`);
 });
 renameOperations.forEach((item) => {
   console.log(`${item.old} >> ${item.new}`);
 });
-prompt(
+const okToExecuteStr = prompt(
   `OK to create ${newFolders.length} folders and rename ${
-    multiplier * batchNameArray.length
-  } items?`
-);
+    batchSize * batchNameArray.length
+  } items? (y/N)`,
+  "N"
+).toLowerCase();
+if (okToExecuteStr !== "y") {
+  console.log("exiting!");
+  process.exit();
+}
+console.log(okToExecuteStr);
 let fileErrorCount = 0;
 let fileSuccessCount = 0;
 let folderErrorCount = 0;
