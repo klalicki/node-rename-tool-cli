@@ -6,8 +6,10 @@ const { debug } = require("console");
 
 // debugMode: set to true to disable actual file write operations.
 // if true, the script will not actually rename files or create folders.
-const debugMode = true;
-
+const debugMode = false;
+if (debugMode) {
+  console.log("debug mode is on-- nothing will be written to the file system!");
+}
 // function declarations:
 
 /**
