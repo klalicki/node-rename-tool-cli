@@ -142,11 +142,13 @@ cleanFileNameArray.forEach((batchName, batchNameIndex) => {
   }
   assetTypeArray.forEach((assetType, assetTypeIndex) => {
     let curIndex = batchNameIndex * batchSize + assetTypeIndex + 1;
+    // checks if index is <10 and appends leading 0 if so.
+    if (curIndex < 10) {
+      curIndex = "0" + curIndex;
+    }
     let newFilename = `${baseFolder}/${newPrefix}${batchName}_${assetType}.jpg`;
     let oldFilename = `./img/${baseName}_${curIndex}.jpg`;
-    if (batchNameIndex === 0 && assetTypeIndex === 0) {
-      oldFilename = `./img/${baseName}_.jpg`;
-    }
+
     renameOperations.push({ old: oldFilename, new: newFilename });
   });
 });
